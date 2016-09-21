@@ -28,5 +28,27 @@ namespace Budget.Api.Controllers
                 .Find(new BsonDocument())
                 .ToList();
         }
+
+        //
+        // GET: /api/budgets/2016
+
+        [HttpGet("{id:int}")]
+        public object GetById(int id)
+        {
+            var client = new MongoClient("mongodb://shelldn-ubuntu.westeurope.cloudapp.azure.com:27027/");
+            var db = client.GetDatabase("budgetio");
+            var budgets = db.GetCollection<BudgetRecord>("budgets");
+
+            var budget = budgets.Find(b => b.Year == id && b.AccountId == 1).Single();
+
+            return new
+            {
+                data = new
+                {
+                    type = "budgets",
+                    id
+                }
+            };
+        }
     }
 }
