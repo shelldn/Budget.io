@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Budget.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -35,6 +36,10 @@ namespace Budget.Api.Controllers
         [HttpGet("{id:int}")]
         public object GetById(int id)
         {
+            var pack = new ConventionPack { new CamelCaseElementNameConvention() };
+
+            ConventionRegistry.Register("CamelCase", pack, t => true);
+
             var client = new MongoClient("mongodb://shelldn-ubuntu.westeurope.cloudapp.azure.com:27027/");
             var db = client.GetDatabase("budgetio");
             var budgets = db.GetCollection<BudgetRecord>("budgets");
@@ -46,8 +51,30 @@ namespace Budget.Api.Controllers
                 data = new
                 {
                     type = "budgets",
-                    id
-                }
+                    id,
+                    relationships = new
+                    {
+                        categories = new
+                        {
+                            data = budget.Categories.Select(c => new
+                            {
+                                type = "categories",
+                                id = c.Id
+                            })
+                        }
+                    }
+                },
+
+                included = budget.Categories.Select(c => new
+                {
+                    type = "categories",
+                    id = c.Id,
+                    attributes = new
+                    {
+                        type = c.Type,
+                        name = c.Name
+                    }
+                })
             };
         }
     }

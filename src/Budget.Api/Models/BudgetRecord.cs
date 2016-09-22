@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System.Collections.Generic;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Budget.Api.Models
 {
@@ -9,5 +10,7 @@ namespace Budget.Api.Models
 
         [BsonElement("account_id")]
         public int AccountId { get; set; }
+
+        public IEnumerable<Category> Categories { get; set; }
     }
 }
