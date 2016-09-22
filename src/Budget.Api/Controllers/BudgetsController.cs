@@ -73,8 +73,29 @@ namespace Budget.Api.Controllers
                     {
                         type = c.Type,
                         name = c.Name
+                    },
+                    relationships = new
+                    {
+                        operations = new
+                        {
+                            data = c.Operations.Select(o => new
+                            {
+                                type = "operations",
+                                id = o.Id
+                            })
+                        }
                     }
                 })
+                .Concat<object>(budget.Categories.SelectMany(c => c.Operations).Select(o => new
+                    {
+                        type = "operations",
+                        id = o.Id,
+                        attributes = new
+                        {
+                            plan = o.Plan,
+                            fact = o.Fact
+                        }
+                    }))
             };
         }
     }

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System.Collections.Generic;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Budget.Api.Models
 {
@@ -8,5 +9,6 @@ namespace Budget.Api.Models
         public int Id { get; set; }
         public string Type { get; set; }
         public string Name { get; set; }
+        public IEnumerable<Operation> Operations { get; set; }
     }
 }
