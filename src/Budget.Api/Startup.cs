@@ -24,6 +24,7 @@ namespace Budget.Api
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddCors();
             services.AddMvc();
         }
 
@@ -32,6 +33,8 @@ namespace Budget.Api
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.UseCors(b => b.AllowAnyOrigin());
 
             app.UseMvc();
         }
