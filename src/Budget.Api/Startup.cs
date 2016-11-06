@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Budget.Api.Formatters;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,9 +24,19 @@ namespace Budget.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
+            services.AddSingleton<IConfiguration>(Configuration);
+
+            services.AddRouting(o => o.LowercaseUrls = true);
+
             services.AddCors();
-            services.AddMvc();
+
+            services
+                .AddMvcCore(o =>
+                {
+                    // o.InputFormatters.Add(new JsonApiInputFormatter());
+                })
+                .AddAuthorization()
+                .AddJsonFormatters();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,7 +45,17 @@ namespace Budget.Api
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseCors(b => b.AllowAnyOrigin());
+            app.UseCors(b => b
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+
+            app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
+            {
+                Authority = "http://budgetid.azurewebsites.net",
+                ScopeName = "api",
+                RequireHttpsMetadata = false
+            });
 
             app.UseMvc();
         }
