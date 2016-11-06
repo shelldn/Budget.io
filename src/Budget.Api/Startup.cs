@@ -33,7 +33,7 @@ namespace Budget.Api
             services
                 .AddMvcCore(o =>
                 {
-                    // o.InputFormatters.Add(new JsonApiInputFormatter());
+                    o.InputFormatters.Insert(0, new JsonApiInputFormatter());
                 })
                 .AddAuthorization()
                 .AddJsonFormatters();

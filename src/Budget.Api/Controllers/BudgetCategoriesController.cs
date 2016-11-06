@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Budget.Api.Models;
+using Budget.Api.ViewModels;
 using IdentityModel;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -62,9 +63,28 @@ namespace Budget.Api.Controllers
         // PATCH: /api/budgets/2016/categories/1
 
         [HttpPatch("{id:int}")]
-        public void Update(int budgetId, int id, Category category)
+        public IActionResult Update(int budgetId, int id, [FromBody] CategoryPatch patch)
         {
-            
+            var pack = new ConventionPack { new CamelCaseElementNameConvention() };
+
+            ConventionRegistry.Register("CamelCase", pack, t => true);
+
+            var client = new MongoClient(_config.GetConnectionString("DefaultConnection"));
+            var db = client.GetDatabase("budgetio");
+            var budgets = db.GetCollection<BudgetRecord>("budgets");
+
+            var accountId = Int32.Parse(User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value);
+
+            var filter = Builders<BudgetRecord>.Filter.And(
+                budgets.Find(b => b.Year == budgetId && b.AccountId == accountId).Filter,
+                Builders<BudgetRecord>.Filter.ElemMatch(b => b.Categories, c => c.Id == id)
+                );
+
+            var update = Builders<BudgetRecord>.Update.Set(b => b.Categories.ElementAt(-1).Name, patch.Name);
+
+            budgets.UpdateOne(filter, update);
+
+            return NoContent();
         }
     }
 }
