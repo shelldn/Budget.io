@@ -7,6 +7,7 @@ using IdentityModel;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
@@ -75,10 +76,11 @@ namespace Budget.Api.Controllers
 
             var accountId = Int32.Parse(User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value);
 
-            var filter = Builders<BudgetRecord>.Filter.And(
-                budgets.Find(b => b.Year == budgetId && b.AccountId == accountId).Filter,
-                Builders<BudgetRecord>.Filter.ElemMatch(b => b.Categories, c => c.Id == id)
-                );
+            var filter = budgets.Find(
+                b => b.Year == budgetId &&
+                b.AccountId == accountId &&
+                b.Categories.Any(c => c.Id == id)
+            ).Filter;
 
             var update = Builders<BudgetRecord>.Update.Set(b => b.Categories.ElementAt(-1).Name, patch.Name);
 
