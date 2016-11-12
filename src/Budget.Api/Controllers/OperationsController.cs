@@ -1,11 +1,8 @@
-﻿using System;
-using Budget.Api.Models;
-using IdentityModel;
+﻿using Budget.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
-using System.Linq;
 
 namespace Budget.Api.Controllers
 {
@@ -50,6 +47,26 @@ namespace Budget.Api.Controllers
                     }
                 }
             });
+        }
+
+        //
+        // PATCH: /api/budgets/2016/operations/58277bb5e209b730805c1c80
+
+        [HttpPatch("{id}")]
+        public IActionResult Update(int budgetId, string id, [FromBody] Operation operation)
+        {
+            var pack = new ConventionPack { new CamelCaseElementNameConvention() };
+
+            ConventionRegistry.Register("CamelCase", pack, t => true);
+
+            var client = new MongoClient(_config.GetConnectionString("DefaultConnection"));
+            var db = client.GetDatabase("budgetio");
+            var operations = db.GetCollection<Operation>("operations");
+
+            operations.UpdateOne(operations.Find(o => o.BudgetId == budgetId && o.Id == id).Filter,
+                Builders<Operation>.Update.Set(o => o.Plan, operation.Plan).Set(o => o.Fact, operation.Fact));
+
+            return NoContent();
         }
     }
 }
