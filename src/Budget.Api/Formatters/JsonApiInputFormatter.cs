@@ -1,4 +1,5 @@
-﻿using System.Dynamic;
+﻿using System;
+using System.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
 using Budget.Api.Models;
@@ -24,10 +25,30 @@ namespace Budget.Api.Formatters
 
                 var attrs = result.data.attributes;
 
-                var obj = new CategoryPatch
+                object obj;
+
+                switch (context.ModelType.Name)
                 {
-                    Name = attrs.name
-                };
+                    case nameof(CategoryPatch):
+                        obj = new CategoryPatch
+                        {
+                            Name = attrs.name
+                        };
+                        break;
+
+                    case nameof(Operation):
+                        obj = new Operation
+                        {
+                            CategoryId = Int32.Parse(result.data.relationships.category.data.id),
+                            Month = Int32.Parse(result.data.relationships.month.data.id),
+                            Plan = attrs.plan,
+                            Fact = attrs.fact
+                        };
+                        break;
+
+                    default:
+                        throw new NotSupportedException($"Deserializing of type {context.ModelType} is not supported.");
+                }
 
                 return Task.FromResult(InputFormatterResult.Success(obj));
             }

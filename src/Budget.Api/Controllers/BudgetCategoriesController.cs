@@ -36,6 +36,7 @@ namespace Budget.Api.Controllers
             var client = new MongoClient(_config.GetConnectionString("DefaultConnection"));
             var db = client.GetDatabase("budgetio");
             var budgets = db.GetCollection<BudgetRecord>("budgets");
+            var operations = db.GetCollection<Operation>("operations");
 
             var accountId = Int32.Parse(User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value);
 
@@ -55,6 +56,47 @@ namespace Budget.Api.Controllers
                     {
                         name = c.Name,
                         type = c.Type
+                    },
+                    relationships = new
+                    {
+                        operations = new
+                        {
+                            data = operations.Find(o => o.BudgetId == budgetId && o.CategoryId == c.Id).ToList().Select(o => new
+                            {
+                                type = "operations",
+                                o.Id
+                            })
+                        }
+                    }
+                }),
+
+                included = operations.Find(o => o.BudgetId == budgetId).ToList().Select(o => new
+                {
+                    type = "operations",
+                    o.Id,
+                    attributes = new
+                    {
+                        o.Plan,
+                        o.Fact
+                    },
+                    relationships = new
+                    {
+                        month = new
+                        {
+                            data = new
+                            {
+                                type = "months",
+                                id = o.Month
+                            }
+                        },
+                        category = new
+                        {
+                            data = new
+                            {
+                                type = "category",
+                                id = o.CategoryId
+                            }
+                        }
                     }
                 })
             };
