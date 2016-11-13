@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Budget.Api.Models;
 using Budget.Api.ViewModels;
 using IdentityModel;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
 namespace Budget.Api.Controllers
@@ -16,11 +11,11 @@ namespace Budget.Api.Controllers
     [Route("api/budgets/{budgetId:int}/categories")]
     public class BudgetCategoriesController : Controller
     {
-        private readonly IConfiguration _config;
+        private readonly IMongoDatabase _db;
 
-        public BudgetCategoriesController(IConfiguration config)
+        public BudgetCategoriesController(IMongoDatabase db)
         {
-            _config = config;
+            _db = db;
         }
 
         //
@@ -29,14 +24,8 @@ namespace Budget.Api.Controllers
         [HttpGet]
         public object GetAll(int budgetId)
         {
-            var pack = new ConventionPack { new CamelCaseElementNameConvention() };
-
-            ConventionRegistry.Register("CamelCase", pack, t => true);
-
-            var client = new MongoClient(_config.GetConnectionString("DefaultConnection"));
-            var db = client.GetDatabase("budgetio");
-            var budgets = db.GetCollection<BudgetRecord>("budgets");
-            var operations = db.GetCollection<Operation>("operations");
+            var budgets = _db.GetCollection<BudgetRecord>("budgets");
+            var operations = _db.GetCollection<Operation>("operations");
 
             var accountId = Int32.Parse(User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value);
 
@@ -108,13 +97,7 @@ namespace Budget.Api.Controllers
         [HttpPatch("{id:int}")]
         public IActionResult Update(int budgetId, int id, [FromBody] CategoryPatch patch)
         {
-            var pack = new ConventionPack { new CamelCaseElementNameConvention() };
-
-            ConventionRegistry.Register("CamelCase", pack, t => true);
-
-            var client = new MongoClient(_config.GetConnectionString("DefaultConnection"));
-            var db = client.GetDatabase("budgetio");
-            var budgets = db.GetCollection<BudgetRecord>("budgets");
+            var budgets = _db.GetCollection<BudgetRecord>("budgets");
 
             var accountId = Int32.Parse(User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value);
 

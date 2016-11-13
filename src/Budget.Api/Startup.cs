@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Driver;
 
 namespace Budget.Api
 {
@@ -25,6 +27,14 @@ namespace Budget.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IConfiguration>(Configuration);
+            services.AddTransient<IMongoClient>(
+                sp => new MongoClient(sp.GetService<IConfiguration>().GetConnectionString("DefaultConnection")));
+
+            var pack = new ConventionPack { new CamelCaseElementNameConvention() };
+
+            ConventionRegistry.Register("CamelCase", pack, t => true);
+
+            services.AddTransient(sp => sp.GetService<IMongoClient>().GetDatabase("budgetio"));
 
             services.AddRouting(o => o.LowercaseUrls = true);
 
