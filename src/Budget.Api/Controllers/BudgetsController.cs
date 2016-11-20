@@ -1,33 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using Budget.Api.Models;
+using IdentityModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
 namespace Budget.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class BudgetsController : Controller
     {
-        //
-        // GET: /api/budgets
+        private readonly IMongoDatabase _db;
 
-        [HttpGet]
-        public IEnumerable<BudgetSummary> GetAll()
+        public BudgetsController(IMongoDatabase db)
         {
-            var pack = new ConventionPack { new CamelCaseElementNameConvention() };
-
-            ConventionRegistry.Register("CamelCase", pack, t => true);
-
-            var client = new MongoClient("mongodb://shelldn-ubuntu.westeurope.cloudapp.azure.com:27027/");
-            var db = client.GetDatabase("budgetio");
-            var budgets = db.GetCollection<BudgetSummary>("budgets");
-
-            return budgets
-                .Find(new BsonDocument())
-                .ToList();
+            _db = db;
         }
 
         //
@@ -36,15 +25,11 @@ namespace Budget.Api.Controllers
         [HttpGet("{id:int}")]
         public object GetById(int id)
         {
-            var pack = new ConventionPack { new CamelCaseElementNameConvention() };
+            var budgets = _db.GetCollection<BudgetRecord>("budgets");
 
-            ConventionRegistry.Register("CamelCase", pack, t => true);
+            var accountId = Int32.Parse(User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value);
 
-            var client = new MongoClient("mongodb://shelldn-ubuntu.westeurope.cloudapp.azure.com:27027/");
-            var db = client.GetDatabase("budgetio");
-            var budgets = db.GetCollection<BudgetRecord>("budgets");
-
-            var budget = budgets.Find(b => b.Year == id && b.AccountId == 1).Single();
+            budgets.Find(b => b.Year == id && b.AccountId == accountId).Single();
 
             return new
             {
@@ -56,46 +41,13 @@ namespace Budget.Api.Controllers
                     {
                         categories = new
                         {
-                            data = budget.Categories.Select(c => new
+                            links = new
                             {
-                                type = "categories",
-                                id = c.Id
-                            })
+                                related = Url.Action("GetAll", "BudgetCategories", new { budgetId = id })
+                            }
                         }
                     }
                 },
-
-                included = budget.Categories.Select(c => new
-                {
-                    type = "categories",
-                    id = c.Id,
-                    attributes = new
-                    {
-                        type = c.Type,
-                        name = c.Name
-                    },
-                    relationships = new
-                    {
-                        operations = new
-                        {
-                            data = c.Operations.Select(o => new
-                            {
-                                type = "operations",
-                                id = o.Id
-                            })
-                        }
-                    }
-                })
-                .Concat<object>(budget.Categories.SelectMany(c => c.Operations).Select(o => new
-                    {
-                        type = "operations",
-                        id = o.Id,
-                        attributes = new
-                        {
-                            plan = o.Plan,
-                            fact = o.Fact
-                        }
-                    }))
             };
         }
     }
