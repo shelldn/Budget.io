@@ -1,6 +1,8 @@
 ﻿using Budget.Api.Formatters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -42,6 +44,11 @@ namespace Budget.Api
 
             services.AddMvc(o =>
             {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                o.Filters.Add(new AuthorizeFilter(policy));
                 o.InputFormatters.Insert(0, new JsonApiInputFormatter());
             });
 
@@ -61,7 +68,7 @@ namespace Budget.Api
 
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
-                Authority = "http://budgetid.azurewebsites.net",
+                Authority = env.IsDevelopment() ? "http://localhost:5000" : "http://budgetid.azurewebsites.net",
                 ScopeName = "api",
                 RequireHttpsMetadata = false
             });

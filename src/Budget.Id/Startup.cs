@@ -43,7 +43,7 @@ namespace Budget.Id
                 {
                     new InMemoryUser
                     {
-                        Subject = "1",
+                        Subject = "5831db9c46c7cae8980e4a56",
                         Username = "yevgeny.shirin@gmail.com",
                         Password = "qwerty123"
                     }
