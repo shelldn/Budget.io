@@ -8,6 +8,10 @@
     "Microsoft.NETCore.App": "1.1.0"
   },
 
+  "runtimes": {
+    "win10-x64": {}
+  },
+
   "tools": {
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
   },

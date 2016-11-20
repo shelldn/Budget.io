@@ -40,13 +40,12 @@ namespace Budget.Api
 
             services.AddCors();
 
-            services
-                .AddMvcCore(o =>
-                {
-                    o.InputFormatters.Insert(0, new JsonApiInputFormatter());
-                })
-                .AddAuthorization()
-                .AddJsonFormatters();
+            services.AddMvc(o =>
+            {
+                o.InputFormatters.Insert(0, new JsonApiInputFormatter());
+            });
+
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,7 +66,10 @@ namespace Budget.Api
                 RequireHttpsMetadata = false
             });
 
-            app.UseMvc();
+            app.UseMvcWithDefaultRoute();
+
+            app.UseSwagger();
+            app.UseSwaggerUi();
         }
     }
 }
