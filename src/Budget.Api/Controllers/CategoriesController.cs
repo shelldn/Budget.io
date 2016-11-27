@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Budget.Api.Models;
 using IdentityModel;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +17,8 @@ namespace Budget.Api.Controllers
             _db = db;
         }
 
-        //
-        // GET: /api/budgets/2017/categories
-
         [HttpGet("~/api/budgets/{budgetId:int}/[controller]")]
+        [ProducesResponseType(typeof(IEnumerable<Category>), 200)]
         public IActionResult GetByBudgetId(int budgetId)
         {
             var accountId = User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
@@ -32,6 +30,32 @@ namespace Budget.Api.Controllers
                     c.AccountId == accountId);
 
             return Ok(categories.ToList());
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Category), 200)]
+        public IActionResult GetById(string id)
+        {
+            return Ok(new Category { Id = id });
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(Category), 201)]
+        public IActionResult Create(Category category)
+        {
+            return CreatedAtAction("GetById", new { category.Id });
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult Update(Category category)
+        {
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteById(string id)
+        {
+            return NoContent();
         }
     }
 }
