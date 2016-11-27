@@ -1,9 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Budget.Api.Models
+namespace Budget.Data.Models
 {
-    [BsonIgnoreExtraElements]
     public class Category
     {
         [BsonRepresentation(BsonType.ObjectId)]

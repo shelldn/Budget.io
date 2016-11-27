@@ -1,12 +1,10 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Budget.Api.Models
+namespace Budget.Data.Models
 {
-    [BsonIgnoreExtraElements]
     public class Operation
     {
-        [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 

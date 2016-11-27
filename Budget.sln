@@ -14,6 +14,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Budget.Api", "src\Budget.Ap
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Budget.Id", "src\Budget.Id\Budget.Id.xproj", "{536C6E0C-597A-4060-AFA7-3F8F8B5B9E0B}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Budget.Data", "src\Budget.Data\Budget.Data.xproj", "{DB75AA13-C039-4E19-B9C2-B435B176A6AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{536C6E0C-597A-4060-AFA7-3F8F8B5B9E0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{536C6E0C-597A-4060-AFA7-3F8F8B5B9E0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{536C6E0C-597A-4060-AFA7-3F8F8B5B9E0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB75AA13-C039-4E19-B9C2-B435B176A6AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB75AA13-C039-4E19-B9C2-B435B176A6AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB75AA13-C039-4E19-B9C2-B435B176A6AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB75AA13-C039-4E19-B9C2-B435B176A6AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -35,5 +41,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{BFFD643C-EA3D-4E39-829C-737ED496C86A} = {A81065DF-708B-47E1-A3DA-BFEA19BC8C60}
 		{536C6E0C-597A-4060-AFA7-3F8F8B5B9E0B} = {A81065DF-708B-47E1-A3DA-BFEA19BC8C60}
+		{DB75AA13-C039-4E19-B9C2-B435B176A6AF} = {A81065DF-708B-47E1-A3DA-BFEA19BC8C60}
 	EndGlobalSection
 EndGlobal
