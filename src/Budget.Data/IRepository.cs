@@ -10,7 +10,7 @@ namespace Budget.Data
         Task<IEnumerable<T>> QueryAsync(Expression<Func<T, bool>> predicate);
         Task<T> GetByIdAsync<TKey>(TKey id);
         Task CreateAsync(T item);
-        Task UpdateAsync(T item);
+        Task UpdateAsync<TKey>(TKey id, T item);
         Task DeleteByIdAsync<TKey>(TKey id);
     }
 }

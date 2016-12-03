@@ -59,9 +59,7 @@ namespace Budget.Api.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> Update(string id, Category category)
         {
-            category.Id = id;
-
-            await _categories.UpdateAsync(category);
+            await _categories.UpdateAsync(id, category);
 
             return NoContent();
         }
