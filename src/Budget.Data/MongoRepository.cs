@@ -34,9 +34,6 @@ namespace Budget.Data
 
         public async Task<T> GetByIdAsync<TKey>(TKey id)
         {
-            if (!(id is string))
-                throw new NotImplementedException();
-
             return await _collection
                 .Find(IdFilter(id as string))
                 .SingleAsync();
@@ -49,17 +46,11 @@ namespace Budget.Data
 
         public Task UpdateAsync<TKey>(TKey id, T item)
         {
-            if (!(id is string))
-                throw new NotImplementedException();
-
             return _collection.ReplaceOneAsync(IdFilter(id as string), item);
         }
 
         public Task DeleteByIdAsync<TKey>(TKey id)
         {
-            if (!(id is string))
-                throw new NotImplementedException();
-
             return _collection.DeleteOneAsync(IdFilter(id as string));
         }
     }
