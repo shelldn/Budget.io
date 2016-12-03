@@ -70,9 +70,21 @@ namespace Budget.Api.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Update(string id, Category category)
+        public async Task<IActionResult> Update(string id, [FromBody] ApiCategory category)
         {
-            await _categories.UpdateAsync(id, category);
+            var accountId = // User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
+                "5831db9c46c7cae8980e4a56";
+
+            var record = new Category
+            {
+                Id = id,
+                AccountId = accountId,
+                BudgetId = category.BudgetId,
+                Type = category.Type,
+                Name = category.Name
+            };
+
+            await _categories.UpdateAsync(id, record);
 
             return NoContent();
         }

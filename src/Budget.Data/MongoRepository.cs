@@ -52,12 +52,7 @@ namespace Budget.Data
             if (!(id is string))
                 throw new NotImplementedException();
 
-            var q = new BsonDocument
-            {
-                ["_id"] = id as string
-            };
-
-            return _collection.ReplaceOneAsync(q, item);
+            return _collection.ReplaceOneAsync(IdFilter(id as string), item);
         }
 
         public Task DeleteByIdAsync<TKey>(TKey id)
