@@ -11,8 +11,13 @@ namespace Budget.Data.Models
         [BsonElement("budget_id")]
         public int BudgetId { get; set; }
 
+        [BsonElement("account_id")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string AccountId { get; set; }
+
         [BsonElement("category_id")]
-        public int CategoryId { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string CategoryId { get; set; }
 
         public int Month { get; set; }
         public decimal Plan { get; set; }

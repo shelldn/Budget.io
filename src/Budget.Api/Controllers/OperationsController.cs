@@ -1,25 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Budget.Data;
+using Budget.Data.Models;
+using IdentityModel;
+using Microsoft.AspNetCore.Mvc;
+
+using ApiOperation = Budget.Api.Models.Operation;
+using System.Linq;
 
 namespace Budget.Api.Controllers
 {
     [Route("api/[controller]")]
     public class OperationsController : Controller
     {
-        private readonly IMongoDatabase _db;
+        private readonly IRepository<Operation> _operations;
 
-        public OperationsController(IMongoDatabase db)
+        public OperationsController(IRepository<Operation> operations)
         {
-            _db = db;
+            _operations = operations;
         }
 
         //
         // GET: /api/budgets/2017/operations
 
         [HttpGet("~/api/budgets/{budgetId:int}/[controller]")]
-        public IActionResult GetByBudgetId(int budgetId)
+        [ProducesResponseType(typeof(IEnumerable<ApiOperation>), 200)]
+        public async Task<IActionResult> GetByBudgetId(int budgetId)
         {
-            return Ok();
+            var accountId = User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
+
+            var records = await _operations.QueryAsync(o =>
+                o.AccountId == accountId &&
+                o.BudgetId == budgetId);
+
+            var operations = records.Select(r => new ApiOperation
+            {
+                Id = r.Id,
+                CategoryId = r.CategoryId,
+                Month = r.Month,
+                Plan = r.Plan,
+                Fact = r.Fact
+            });
+
+            return Ok(operations);
         }
     }
 }
