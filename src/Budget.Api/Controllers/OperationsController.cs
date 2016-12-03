@@ -27,7 +27,8 @@ namespace Budget.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<ApiOperation>), 200)]
         public async Task<IActionResult> GetByBudgetId(int budgetId)
         {
-            var accountId = User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
+            var accountId = // User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
+                "5831db9c46c7cae8980e4a56";
 
             var records = await _operations.QueryAsync(o =>
                 o.AccountId == accountId &&

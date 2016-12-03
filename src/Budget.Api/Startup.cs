@@ -1,4 +1,6 @@
 ﻿using Budget.Api.Formatters;
+using Budget.Data;
+using Budget.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,7 +28,7 @@ namespace Budget.Api
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        private void ConfigureDependencies(IServiceCollection services)
         {
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddTransient<IMongoClient>(
@@ -37,6 +39,15 @@ namespace Budget.Api
             ConventionRegistry.Register("CamelCase", pack, t => true);
 
             services.AddTransient(sp => sp.GetService<IMongoClient>().GetDatabase("budgetio"));
+            services.AddTransient(typeof(IRepository<>), typeof(MongoRepository<>));
+
+            services.AddTransient(sp => sp.GetService<IMongoDatabase>().GetCollection<Category>("categories"));
+            services.AddTransient(sp => sp.GetService<IMongoDatabase>().GetCollection<Operation>("operations"));
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            ConfigureDependencies(services);
 
             services.AddRouting(o => o.LowercaseUrls = true);
 
@@ -48,7 +59,7 @@ namespace Budget.Api
                     .RequireAuthenticatedUser()
                     .Build();
 
-                o.Filters.Add(new AuthorizeFilter(policy));
+                // o.Filters.Add(new AuthorizeFilter(policy));
                 o.InputFormatters.Insert(0, new JsonApiInputFormatter());
             });
 
@@ -60,6 +71,9 @@ namespace Budget.Api
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
 
             app.UseCors(b => b
                 .AllowAnyOrigin()
