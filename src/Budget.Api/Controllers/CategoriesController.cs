@@ -34,6 +34,7 @@ namespace Budget.Api.Controllers
             var categories = records.Select(r => new ApiCategory
             {
                 Id = r.Id,
+                BudgetId = r.BudgetId,
                 Type = r.Type,
                 Name = r.Name
             });
@@ -49,12 +50,23 @@ namespace Budget.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Category), 201)]
-        public async Task<IActionResult> Create(Category category)
+        [ProducesResponseType(201)]
+        public async Task<IActionResult> Create([FromBody] ApiCategory category)
         {
-            await _categories.CreateAsync(category);
+            var accountId = // User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
+                "5831db9c46c7cae8980e4a56";
 
-            return CreatedAtAction("GetById", new { category.Id });
+            var record = new Category
+            {
+                AccountId = accountId,
+                BudgetId = category.BudgetId,
+                Type = category.Type,
+                Name = category.Name
+            };
+
+            await _categories.CreateAsync(record);
+
+            return CreatedAtAction(nameof(GetById), new { id = record.Id }, record);
         }
 
         [HttpPatch("{id}")]
