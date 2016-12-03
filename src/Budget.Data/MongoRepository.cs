@@ -60,12 +60,7 @@ namespace Budget.Data
             if (!(id is string))
                 throw new NotImplementedException();
 
-            var q = new BsonDocument
-            {
-                ["_id"] = id as string
-            };
-
-            return _collection.DeleteOneAsync(q);
+            return _collection.DeleteOneAsync(IdFilter(id as string));
         }
     }
 }
