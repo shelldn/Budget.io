@@ -16,6 +16,17 @@ namespace Budget.Data
             _collection = collection;
         }
 
+        private static BsonDocument IdFilter(string id)
+        {
+            if (id == null)
+                throw new ArgumentNullException();
+
+            return new BsonDocument
+            {
+                ["_id"] = ObjectId.Parse(id)
+            };
+        }
+
         public async Task<IEnumerable<T>> QueryAsync(Expression<Func<T, bool>> predicate)
         {
             return await _collection.Find(predicate).ToListAsync();
@@ -26,12 +37,9 @@ namespace Budget.Data
             if (!(id is string))
                 throw new NotImplementedException();
 
-            var q = new BsonDocument
-            {
-                ["_id"] = id as string
-            };
-
-            return await _collection.Find(q).SingleAsync();
+            return await _collection
+                .Find(IdFilter(id as string))
+                .SingleAsync();
         }
 
         public Task CreateAsync(T item)
