@@ -36,6 +36,7 @@ namespace Budget.Api.Controllers
             var operations = records.Select(r => new ApiOperation
             {
                 Id = r.Id,
+                BudgetId = r.BudgetId,
                 CategoryId = r.CategoryId,
                 Month = r.Month,
                 Plan = r.Plan,
@@ -85,6 +86,7 @@ namespace Budget.Api.Controllers
 
             var record = new Operation
             {
+                Id = id,
                 AccountId = accountId,
                 BudgetId = operation.BudgetId,
                 CategoryId = operation.CategoryId,
