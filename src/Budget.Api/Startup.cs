@@ -59,7 +59,7 @@ namespace Budget.Api
                     .RequireAuthenticatedUser()
                     .Build();
 
-                // o.Filters.Add(new AuthorizeFilter(policy));
+                o.Filters.Add(new AuthorizeFilter(policy));
                 o.InputFormatters.Insert(0, new JsonApiInputFormatter());
             });
 
