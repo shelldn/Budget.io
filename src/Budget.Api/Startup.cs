@@ -1,10 +1,8 @@
-﻿using Budget.Api.Formatters;
+﻿using Budget.Api.Configuration;
 using Budget.Data;
 using Budget.Data.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -53,15 +51,7 @@ namespace Budget.Api
 
             services.AddCors();
 
-            services.AddMvc(o =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-
-                o.Filters.Add(new AuthorizeFilter(policy));
-                o.InputFormatters.Insert(0, new JsonApiInputFormatter());
-            });
+            services.AddApi();
 
             services.AddSwaggerGen();
         }
@@ -86,7 +76,7 @@ namespace Budget.Api
                 RequireHttpsMetadata = false
             });
 
-            app.UseMvcWithDefaultRoute();
+            app.UseMvc();
 
             app.UseSwagger();
             app.UseSwaggerUi();
