@@ -1,18 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace Budget.Api.Filters
 {
-    public class JsonApiResultFilter : IResultFilter
+    internal sealed class JsonApiResultFilter : IResultFilter
     {
+        private readonly ILogger _log;
+
+        public JsonApiResultFilter(ILogger<JsonApiResultFilter> log)
+        {
+            _log = log;
+        }
+
         public void OnResultExecuting(ResultExecutingContext context)
         {
-            context.HttpContext.Request.Headers["Accept"] = "application/vnd.api+json";
-            throw new System.NotImplementedException();
+            var isObjectResult = context.Result is ObjectResult;
+
+            _log.LogInformation("Is ObjectResult: {0}", isObjectResult);
         }
 
         public void OnResultExecuted(ResultExecutedContext context)
         {
-            throw new System.NotImplementedException();
+
         }
     }
 }

@@ -58,8 +58,8 @@ namespace Budget.Api
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory
+                .AddConsole(Configuration.GetSection("Logging"));
 
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();

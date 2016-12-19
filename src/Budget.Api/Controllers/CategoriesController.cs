@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Budget.Api.Filters;
 using Budget.Data;
 using Budget.Data.Models;
 

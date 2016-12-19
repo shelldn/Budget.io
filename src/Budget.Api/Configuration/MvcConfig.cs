@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Budget.Api.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Budget.Api.Configuration
@@ -15,9 +17,9 @@ namespace Budget.Api.Configuration
             // options.Filters.Add(new AuthorizeFilter(policy));
         }
 
-        private static void ConfigureFormatters(MvcOptions options)
+        private static void ConfigureFilters(FilterCollection filters)
         {
-
+            filters.Add(typeof(JsonApiResultFilter));
         }
 
         public static void AddApi(this IServiceCollection services)
@@ -25,7 +27,7 @@ namespace Budget.Api.Configuration
             services.AddMvc(o =>
             {
                 ConfigureAuthorization(o);
-                ConfigureFormatters(o);
+                ConfigureFilters(o.Filters);
             });
         }
     }
