@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Budget.Api.Models.JsonApi;
 using Humanizer;
@@ -29,6 +30,32 @@ namespace Budget.Api.Filters
             _obj.Type = _sourceType.Name
                 .Pluralize()
                 .Camelize();
+
+            return this;
+        }
+
+        public ResourceObjectBuilder TakeAttributes()
+        {
+            return this;
+        }
+
+        public ResourceObjectBuilder ResolveRelationships(Func<string, string, object, string> url)
+        {
+            var relationships = _sourceType.GetProperties().Where(p => !p.PropertyType.GetTypeInfo().IsValueType);
+
+            foreach (var relationship in relationships)
+            {
+                var action = $"GetBy{_sourceType.Name}Id";
+                var controller = relationship.Name;
+
+                _obj.Relationships[relationship.Name] = new RelationshipObject
+                {
+                    Links = new LinksObject
+                    {
+                        Related = url(action, controller, new { _obj.Id })
+                    }
+                };
+            }
 
             return this;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Budget.Api.Filters.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -22,9 +23,13 @@ namespace Budget.Api.Filters
             }
             else
             {
+                var url = context.GetUrlHelper();
+
                 var data = new ResourceObjectBuilder(obj)
                     .TakeId()
                     .TakeType()
+                    .TakeAttributes()
+                    .ResolveRelationships(url.Action)
                     .Build();
 
                 context.Result = new ObjectResult(new { data });
