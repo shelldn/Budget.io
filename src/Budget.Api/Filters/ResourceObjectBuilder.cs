@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Budget.Api.Models.JsonApi;
 using Humanizer;
 
@@ -42,11 +45,13 @@ namespace Budget.Api.Filters
             return typeInfo.IsValueType || type == typeof(string);
         }
 
+        private static bool IsForeignId(PropertyInfo prop) => Regex.IsMatch(prop.Name, "^.+Id$");
+
         public ResourceObjectBuilder TakeAttributes()
         {
             var attributes = _sourceType.GetProperties()
                 .Where(IsAttribute)
-                .Where(p => p.Name != "Id");
+                .Where(p => p.Name != "Id" && !IsForeignId(p));
 
             foreach (var attr in attributes)
             {
@@ -60,7 +65,8 @@ namespace Budget.Api.Filters
 
         public ResourceObjectBuilder ResolveRelationships(Func<string, string, object, string> url)
         {
-            var relationships = _sourceType.GetProperties().Where(IsRelationship);
+            var relationships = _sourceType.GetProperties()
+                .Where(IsRelationship);
 
             foreach (var relationship in relationships)
             {
@@ -72,6 +78,26 @@ namespace Budget.Api.Filters
                     Links = new LinksObject
                     {
                         Related = url(action, controller, new { _obj.Id })
+                    }
+                };
+            }
+
+            var ids = _sourceType.GetProperties()
+                .Where(IsForeignId);
+
+            foreach (var id in ids)
+            {
+                var idName = id.Name;
+                idName = Regex.Replace(idName, "Id$", "");
+
+                _obj.Relationships[idName] = new RelationshipObject
+                {
+                    Data = new ResourceIdentifierObject
+                    {
+                        Id = id.GetValue(_source),
+                        Type = idName
+                            .Camelize()
+                            .Pluralize()
                     }
                 };
             }

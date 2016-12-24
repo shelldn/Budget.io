@@ -38,7 +38,7 @@ namespace Budget.Api.Controllers
                 Id = r.Id,
                 BudgetId = r.BudgetId,
                 CategoryId = r.CategoryId,
-                Month = r.Month,
+                MonthId = r.Month,
                 Plan = r.Plan,
                 Fact = r.Fact
             });
@@ -65,7 +65,7 @@ namespace Budget.Api.Controllers
                 AccountId = accountId,
                 BudgetId = operation.BudgetId,
                 CategoryId = operation.CategoryId,
-                Month = operation.Month,
+                Month = operation.MonthId,
                 Plan = operation.Plan,
                 Fact = operation.Fact
             };
@@ -90,7 +90,7 @@ namespace Budget.Api.Controllers
                 AccountId = accountId,
                 BudgetId = operation.BudgetId,
                 CategoryId = operation.CategoryId,
-                Month = operation.Month,
+                Month = operation.MonthId,
                 Plan = operation.Plan,
                 Fact = operation.Fact
             };
