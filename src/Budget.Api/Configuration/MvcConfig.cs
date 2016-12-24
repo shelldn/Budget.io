@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 
 namespace Budget.Api.Configuration
 {
@@ -28,6 +29,9 @@ namespace Budget.Api.Configuration
             {
                 ConfigureAuthorization(o);
                 ConfigureFilters(o.Filters);
+            }).AddJsonOptions(o =>
+            {
+                o.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
         }
     }

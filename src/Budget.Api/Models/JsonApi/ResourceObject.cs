@@ -6,6 +6,7 @@ namespace Budget.Api.Models.JsonApi
     {
         public object Id { get; set; }
         public string Type { get; set; }
-        public IDictionary<string, RelationshipObject> Relationships { get; set; } = new Dictionary<string, RelationshipObject>();
+        public AttributesObject Attributes { get; set; } = new AttributesObject();
+        public RelationshipsObject Relationships { get; set; } = new RelationshipsObject();
     }
 }

@@ -34,17 +34,26 @@ namespace Budget.Api.Filters
             return this;
         }
 
-        public ResourceObjectBuilder TakeAttributes()
-        {
-            return this;
-        }
-
         private static bool IsAttribute(PropertyInfo prop)
         {
             var type = prop.PropertyType;
             var typeInfo = type.GetTypeInfo();
 
             return typeInfo.IsValueType || type == typeof(string);
+        }
+
+        public ResourceObjectBuilder TakeAttributes()
+        {
+            var attributes = _sourceType.GetProperties()
+                .Where(IsAttribute)
+                .Where(p => p.Name != "Id");
+
+            foreach (var attr in attributes)
+            {
+                _obj.Attributes[attr.Name] = attr.GetValue(_source);
+            }
+
+            return this;
         }
 
         private static bool IsRelationship(PropertyInfo prop) => !IsAttribute(prop);
