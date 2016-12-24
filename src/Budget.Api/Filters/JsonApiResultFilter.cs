@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Budget.Api.Filters.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Linq;
 
 namespace Budget.Api.Filters
 {
@@ -14,26 +15,33 @@ namespace Budget.Api.Filters
 
             if (!isObjectResult) return;
 
-            var result = (ObjectResult) context.Result;
+            var result = (ObjectResult)context.Result;
             var obj = result.Value;
+
+            var url = context.GetUrlHelper();
+
+            object data;
 
             if (obj is IEnumerable)
             {
-                throw new NotImplementedException();
+                data = ((IEnumerable<object>)obj).Select(o => new ResourceObjectBuilder(o)
+                    .TakeId()
+                    .TakeType()
+                    .TakeAttributes()
+                    .ResolveRelationships(url.Action)
+                    .Build());
             }
             else
             {
-                var url = context.GetUrlHelper();
-
-                var data = new ResourceObjectBuilder(obj)
+                data = new ResourceObjectBuilder(obj)
                     .TakeId()
                     .TakeType()
                     .TakeAttributes()
                     .ResolveRelationships(url.Action)
                     .Build();
-
-                context.Result = new ObjectResult(new { data });
             }
+
+            context.Result = new ObjectResult(new { data });
         }
 
         public void OnResultExecuted(ResultExecutedContext context)

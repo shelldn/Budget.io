@@ -39,9 +39,19 @@ namespace Budget.Api.Filters
             return this;
         }
 
+        private static bool IsAttribute(PropertyInfo prop)
+        {
+            var type = prop.PropertyType;
+            var typeInfo = type.GetTypeInfo();
+
+            return typeInfo.IsValueType || type == typeof(string);
+        }
+
+        private static bool IsRelationship(PropertyInfo prop) => !IsAttribute(prop);
+
         public ResourceObjectBuilder ResolveRelationships(Func<string, string, object, string> url)
         {
-            var relationships = _sourceType.GetProperties().Where(p => !p.PropertyType.GetTypeInfo().IsValueType);
+            var relationships = _sourceType.GetProperties().Where(IsRelationship);
 
             foreach (var relationship in relationships)
             {
