@@ -1,23 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
 
 namespace Budget.Api.Filters
 {
     internal sealed class JsonApiResultFilter : IResultFilter
     {
-        private readonly ILogger _log;
-
-        public JsonApiResultFilter(ILogger<JsonApiResultFilter> log)
-        {
-            _log = log;
-        }
-
         public void OnResultExecuting(ResultExecutingContext context)
         {
             var isObjectResult = context.Result is ObjectResult;
 
-            _log.LogInformation("Is ObjectResult: {0}", isObjectResult);
+            if (!isObjectResult) return;
+
+            var result = (ObjectResult) context.Result;
+            var obj = result.Value;
+
+            if (obj is IEnumerable)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                var data = new ResourceObjectBuilder(obj)
+                    .TakeId()
+                    .TakeType()
+                    .Build();
+
+                context.Result = new ObjectResult(new { data });
+            }
         }
 
         public void OnResultExecuted(ResultExecutedContext context)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ApiBudget = Budget.Api.Models.Budget;
 
 namespace Budget.Api.Controllers
 {
@@ -8,23 +9,9 @@ namespace Budget.Api.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetById(int id)
         {
-            return Ok(new
+            return Ok(new ApiBudget
             {
-                data = new
-                {
-                    type = "budget",
-                    id,
-                    relationships = new
-                    {
-                        categories = new
-                        {
-                            links = new
-                            {
-                                related = Url.Action("GetByBudgetId", "Categories", new {budgetId = id})
-                            }
-                        }
-                    }
-                }
+                Id = id
             });
         }
     }
