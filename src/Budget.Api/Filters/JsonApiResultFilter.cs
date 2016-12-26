@@ -4,6 +4,8 @@ using Budget.Api.Filters.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq;
+using Budget.Api.Models.JsonApi;
+using Budget.Api.Services;
 
 namespace Budget.Api.Filters
 {
@@ -18,30 +20,26 @@ namespace Budget.Api.Filters
             var result = (ObjectResult)context.Result;
             var obj = result.Value;
 
-            var url = context.GetUrlHelper();
+            var url = new RelationshipLinkResolver(context.GetUrlHelper());
 
             object data;
 
             if (obj is IEnumerable)
-            {
-                data = ((IEnumerable<object>)obj).Select(o => new ResourceObjectBuilder(o)
-                    .TakeId()
-                    .TakeType()
-                    .TakeAttributes()
-                    .ResolveRelationships(url.Action)
-                    .Build());
-            }
+                data = ((IEnumerable<object>) obj).Select(o => BuildResourceObject(o, url));
             else
-            {
-                data = new ResourceObjectBuilder(obj)
-                    .TakeId()
-                    .TakeType()
-                    .TakeAttributes()
-                    .ResolveRelationships(url.Action)
-                    .Build();
-            }
+                data = BuildResourceObject(obj, url);
 
             context.Result = new ObjectResult(new { data });
+        }
+
+        private static ResourceObject BuildResourceObject(object obj, RelationshipLinkResolver url)
+        {
+            return new ResourceObjectBuilder(obj)
+                .TakeId()
+                .TakeType()
+                .TakeAttributes()
+                .ResolveRelationships(url)
+                .Build();
         }
 
         public void OnResultExecuted(ResultExecutedContext context)

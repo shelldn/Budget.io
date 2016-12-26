@@ -7,5 +7,6 @@ namespace Budget.Api.Models
         public int Id { get; set; }
         public IEnumerable<Category> Categories { get; set; }
         public IEnumerable<Operation> Operations { get; set; }
+        public IEnumerable<Month> Months { get; set; }
     }
 }

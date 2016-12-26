@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Budget.Api.Models.JsonApi;
+using Budget.Api.Services;
 using Humanizer;
 
 namespace Budget.Api.Filters
@@ -63,23 +64,35 @@ namespace Budget.Api.Filters
 
         private static bool IsRelationship(PropertyInfo prop) => !IsAttribute(prop);
 
-        public ResourceObjectBuilder ResolveRelationships(Func<string, string, object, string> url)
+        public ResourceObjectBuilder ResolveRelationships(IRelationshipLinkResolver url)
         {
             var relationships = _sourceType.GetProperties()
                 .Where(IsRelationship);
 
             foreach (var relationship in relationships)
             {
-                var action = $"GetBy{_sourceType.Name}Id";
-                var controller = relationship.Name;
-
-                _obj.Relationships[relationship.Name] = new RelationshipObject
+                var relObj = new RelationshipObject
                 {
                     Links = new LinksObject
                     {
-                        Related = url(action, controller, new { _obj.Id })
+                        Related = url.GetRelated(_sourceType.Name, relationship.Name)
                     }
                 };
+
+                var val = relationship.GetValue(_source);
+
+                if (typeof(IEnumerable).IsAssignableFrom(relationship.PropertyType) && val != null)
+                {
+                    var data = (IEnumerable<object>) val;
+
+                    relObj.Data = data.Select(r => new ResourceId
+                    {
+                        Id = r.GetType().GetProperty("Id").GetValue(r),
+                        Type = relationship.Name.Camelize().Pluralize()
+                    });
+                }
+
+                _obj.Relationships[relationship.Name] = relObj;
             }
 
             var ids = _sourceType.GetProperties()
@@ -92,7 +105,7 @@ namespace Budget.Api.Filters
 
                 _obj.Relationships[idName] = new RelationshipObject
                 {
-                    Data = new ResourceIdentifierObject
+                    Data = new ResourceId
                     {
                         Id = id.GetValue(_source),
                         Type = idName

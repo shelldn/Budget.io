@@ -1,4 +1,5 @@
 ﻿using Budget.Api.Configuration;
+using Budget.Api.Services;
 using Budget.Data;
 using Budget.Data.Models;
 using Microsoft.AspNetCore.Builder;
@@ -41,6 +42,8 @@ namespace Budget.Api
 
             services.AddTransient(sp => sp.GetService<IMongoDatabase>().GetCollection<Category>("categories"));
             services.AddTransient(sp => sp.GetService<IMongoDatabase>().GetCollection<Operation>("operations"));
+
+            services.AddScoped<IMonthGenerator, MonthGenerator>();
         }
 
         public void ConfigureServices(IServiceCollection services)
