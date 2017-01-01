@@ -22,14 +22,16 @@ namespace Budget.Api.Filters
 
             var url = new RelationshipLinkResolver(context.GetUrlHelper());
 
-            object data;
+            var document = new DocumentBuilder(obj)
+                .AddData(b => b
+                    .TakeId()
+                    .TakeType()
+                    .TakeAttributes()
+                    .ResolveRelationships(url)
+                )
+                .Build();
 
-            if (obj is IEnumerable)
-                data = ((IEnumerable<object>) obj).Select(o => BuildResourceObject(o, url));
-            else
-                data = BuildResourceObject(obj, url);
-
-            context.Result = new ObjectResult(new { data });
+            context.Result = new ObjectResult(document);
         }
 
         private static ResourceObject BuildResourceObject(object obj, RelationshipLinkResolver url)
