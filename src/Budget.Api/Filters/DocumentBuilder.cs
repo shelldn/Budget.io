@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Budget.Api.Models.JsonApi;
 
 namespace Budget.Api.Filters
@@ -41,6 +42,31 @@ namespace Budget.Api.Filters
             }
 
             _document.Data = BuildResourceObject(_source, configureBuilder);
+
+            return this;
+        }
+
+        private IEnumerable<object> GetRelationships()
+        {
+            var relationships = _source.GetType()
+                .GetProperties()
+                .Where(p => !p.PropertyType.GetTypeInfo().IsValueType && p.PropertyType != typeof(string))
+                .Select(p => p.GetValue(_source))
+                .Where(v => v != null);
+
+            return relationships.SelectMany(value =>
+            {
+                if (value is IEnumerable)
+                    return value as IEnumerable<object>;
+
+                return new[] { value };
+            });
+        }
+
+        public DocumentBuilder AddIncluded(Action<ResourceObjectBuilder> configureBuilder)
+        {
+            _document.Included = GetRelationships()
+                .Select(o => BuildResourceObject(o, configureBuilder));
 
             return this;
         }

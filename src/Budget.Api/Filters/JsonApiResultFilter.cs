@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Budget.Api.Filters.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +23,15 @@ namespace Budget.Api.Filters
 
             var url = new RelationshipLinkResolver(context.GetUrlHelper());
 
+            Action<ResourceObjectBuilder> configureBuilder = b => b
+                .TakeId()
+                .TakeType()
+                .TakeAttributes()
+                .ResolveRelationships(url);
+
             var document = new DocumentBuilder(obj)
-                .AddData(b => b
-                    .TakeId()
-                    .TakeType()
-                    .TakeAttributes()
-                    .ResolveRelationships(url)
-                )
+                .AddData(configureBuilder)
+                .AddIncluded(configureBuilder)
                 .Build();
 
             context.Result = new ObjectResult(document);
