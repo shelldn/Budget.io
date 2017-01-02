@@ -44,9 +44,16 @@ namespace Budget.Data
             return _collection.InsertOneAsync(item);
         }
 
-        public Task UpdateAsync<TKey>(TKey id, T item)
+        public Task UpdateAsync<TKey>(TKey id, IDictionary<string, object> props)
         {
-            return _collection.ReplaceOneAsync(IdFilter(id as string), item);
+            var update = Builders<T>.Update.Combine();
+
+            foreach (var prop in props)
+            {
+                update.Set(prop.Key, prop.Value);
+            }
+
+            return _collection.UpdateOneAsync(IdFilter(id as string), update);
         }
 
         public Task DeleteByIdAsync<TKey>(TKey id)

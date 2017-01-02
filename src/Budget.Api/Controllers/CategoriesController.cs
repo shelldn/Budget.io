@@ -84,7 +84,7 @@ namespace Budget.Api.Controllers
                 Name = category.Name
             };
 
-            await _categories.UpdateAsync(id, record);
+            // await _categories.UpdateAsync(id, record);
 
             return NoContent();
         }

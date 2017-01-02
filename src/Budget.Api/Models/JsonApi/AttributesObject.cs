@@ -2,7 +2,7 @@
 
 namespace Budget.Api.Models.JsonApi
 {
-    internal sealed class AttributesObject : Dictionary<string, object>
+    public sealed class AttributesObject : Dictionary<string, object>
     {
 
     }

@@ -1,7 +1,10 @@
-﻿using Budget.Api.Filters;
+﻿using System.Collections.Generic;
+using Budget.Api.Filters;
+using Budget.Api.Formatters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 
@@ -23,12 +26,21 @@ namespace Budget.Api.Configuration
             filters.Add(typeof(JsonApiResultFilter));
         }
 
+        private static void ConfigureFormatters(
+            ICollection<IInputFormatter> inputFormatters,
+            ICollection<IOutputFormatter> outputFormatters)
+        {
+            inputFormatters.Add(new JsonApiInputFormatter());
+        }
+
         public static void AddApi(this IServiceCollection services)
         {
             services.AddMvc(o =>
             {
                 ConfigureAuthorization(o);
                 ConfigureFilters(o.Filters);
+                ConfigureFormatters(o.InputFormatters, o.OutputFormatters);
+
             }).AddJsonOptions(o =>
             {
                 o.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
