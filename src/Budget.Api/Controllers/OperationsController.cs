@@ -79,18 +79,23 @@ namespace Budget.Api.Controllers
 
         [HttpPatch("{id}")]
         [ProducesResponseType(204)]
-        public async Task<IActionResult> Update(string id, [FromBody] ResourceObject operation)
+        public async Task<IActionResult> Update(string id, [FromBody] ApiOperation operation)
         {
             var accountId = // User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
                 "5831db9c46c7cae8980e4a56";
 
-            var updates = new Dictionary<string, object>(operation.Attributes);
+            var record = new Operation
+            {
+                Id = operation.Id,
+                AccountId = accountId,
+                BudgetId = operation.BudgetId,
+                Month = operation.MonthId,
+                CategoryId = operation.CategoryId,
+                Plan = operation.Plan,
+                Fact = operation.Fact
+            };
 
-            var props = updates
-                .Concat(operation.Relationships.ToDictionary(r => r.Key, r => r.Value.Data))
-                .ToDictionary(p => p.Key, p => p.Value);
-
-            await _operations.UpdateAsync(id, props);
+            await _operations.UpdateAsync(id, record);
 
             return NoContent();
         }

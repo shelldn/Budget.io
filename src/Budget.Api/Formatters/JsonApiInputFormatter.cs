@@ -1,8 +1,15 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Budget.Api.Models.JsonApi;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Budget.Api.Formatters
 {
@@ -20,10 +27,34 @@ namespace Budget.Api.Formatters
             {
                 using (var reader = new JsonTextReader(txt))
                 {
-                    var serializer = new JsonSerializer();
+                    var serializer = new JsonSerializer
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    };
+
                     var payload = serializer.Deserialize<Payload>(reader);
 
-                    return InputFormatterResult.SuccessAsync(payload.Data);
+                    var modelType = context.ModelType;
+                    var model = Activator.CreateInstance(modelType);
+
+                    modelType.GetProperty("Id").SetValue(model, payload.Data.Id);
+
+                    foreach (var attr in payload.Data.Attributes)
+                    {
+                        modelType.GetProperty(attr.Key.Pascalize()).SetValue(model, attr.Value);
+                    }
+
+                    foreach (var relationship in payload.Data.Relationships)
+                    {
+                        var resourceId = (JObject) relationship.Value.Data;
+
+                        var prop = modelType
+                            .GetProperty($"{relationship.Key.Pascalize()}Id");
+
+                        prop.SetValue(model, resourceId["id"].ToObject(prop.PropertyType));
+                    }
+
+                    return InputFormatterResult.SuccessAsync(model);
                 }
             }
         }
