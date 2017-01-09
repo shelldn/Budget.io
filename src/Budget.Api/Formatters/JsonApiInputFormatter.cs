@@ -41,7 +41,13 @@ namespace Budget.Api.Formatters
 
                     foreach (var attr in payload.Data.Attributes)
                     {
-                        modelType.GetProperty(attr.Key.Pascalize()).SetValue(model, attr.Value);
+                        var prop = modelType.GetProperty(attr.Key.Pascalize());
+                        var value = attr.Value;
+
+                        if (prop.PropertyType == typeof(decimal))
+                            value = Convert.ToDecimal(value);
+
+                        prop.SetValue(model, value);
                     }
 
                     foreach (var relationship in payload.Data.Relationships)
