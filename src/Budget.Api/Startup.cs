@@ -76,7 +76,7 @@ namespace Budget.Api
 
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
-                Authority = env.IsDevelopment() ? "http://localhost:52138" : "http://budgetid.azurewebsites.net",
+                Authority = env.IsDevelopment() ? "http://localhost:52138" : "http://budget-id.azurewebsites.net",
                 AllowedScopes = { "api" },
                 RequireHttpsMetadata = false
             });
