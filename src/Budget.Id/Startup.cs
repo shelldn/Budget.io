@@ -29,7 +29,11 @@ namespace Budget.Id
                         {
                             "api"
                         },
-                        AllowedCorsOrigins = { "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:4200" }
+                        AllowedCorsOrigins =
+                        {
+                            "http://shelldn-ubuntu.westeurope.cloudapp.azure.com",
+                            "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:4200"
+                        }
                     }
                 })
                 .AddInMemoryScopes(new List<Scope>

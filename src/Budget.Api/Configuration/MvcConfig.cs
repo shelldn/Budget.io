@@ -3,6 +3,7 @@ using Budget.Api.Filters;
 using Budget.Api.Formatters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +19,7 @@ namespace Budget.Api.Configuration
                 .RequireAuthenticatedUser()
                 .Build();
 
-            // options.Filters.Add(new AuthorizeFilter(policy));
+            options.Filters.Add(new AuthorizeFilter(policy));
         }
 
         private static void ConfigureFilters(FilterCollection filters)
