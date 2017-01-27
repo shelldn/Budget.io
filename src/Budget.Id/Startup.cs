@@ -50,6 +50,12 @@ namespace Budget.Id
                         Subject = "5831db9c46c7cae8980e4a56",
                         Username = "yevgeny.shirin@gmail.com",
                         Password = "qwerty123"
+                    },
+                    new InMemoryUser
+                    {
+                        Subject = "588b61c00bb389ded4c1f369",
+                        Username = "july.taranenko@gmail.com",
+                        Password = "qwerty123"
                     }
                 });
         }

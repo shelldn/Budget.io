@@ -4,7 +4,7 @@ using Budget.Data;
 using Budget.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using Budget.Api.Models.JsonApi;
+using IdentityModel;
 using ApiOperation = Budget.Api.Models.Operation;
 
 namespace Budget.Api.Controllers
@@ -26,8 +26,7 @@ namespace Budget.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<ApiOperation>), 200)]
         public async Task<IActionResult> GetByBudgetId(int id)
         {
-            var accountId = // User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
-                "5831db9c46c7cae8980e4a56";
+            var accountId = User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
 
             var records = await _operations.QueryAsync(o =>
                 o.AccountId == accountId &&
@@ -57,8 +56,7 @@ namespace Budget.Api.Controllers
         [ProducesResponseType(typeof(ApiOperation), 201)]
         public async Task<IActionResult> Create([FromBody] ApiOperation operation)
         {
-            var accountId = // User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
-                "5831db9c46c7cae8980e4a56";
+            var accountId = User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
 
             var record = new Operation
             {
@@ -81,8 +79,7 @@ namespace Budget.Api.Controllers
         [ProducesResponseType(204)]
         public async Task<IActionResult> Update(string id, [FromBody] ApiOperation operation)
         {
-            var accountId = // User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
-                "5831db9c46c7cae8980e4a56";
+            var accountId = User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
 
             var record = new Operation
             {
