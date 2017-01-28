@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using Budget.Data;
 using Budget.Id.Services;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using IdentityServer4.Test;
+using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -12,11 +14,23 @@ namespace Budget.Id
 {
     public class Startup
     {
+        public IConfigurationRoot Configuration { get; set; }
+
+        public Startup(IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IProfileService, MongoProfileService>();
+            services.AddBudgetData(connectionString: Configuration.GetConnectionString("DefaultConnection"));
 
-            services
+            var builder = services
                 .AddIdentityServer()
                 .AddTemporarySigningCredential()
                 .AddInMemoryClients(new List<Client>
@@ -44,6 +58,7 @@ namespace Budget.Id
                 {
                     new ApiResource("api")
                 })
+                /*
                 .AddTestUsers(new List<TestUser>
                 {
                     new TestUser
@@ -58,10 +73,14 @@ namespace Budget.Id
                         Username = "july.taranenko@gmail.com",
                         Password = "qwerty123"
                     }
-                });
+                })
+                */
+                ;
+
+            builder.Services.AddTransient<IProfileService, MongoProfileService>();
+            builder.Services.AddTransient<IResourceOwnerPasswordValidator, MongoResourceOwnerPasswordValidator>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(LogLevel.Debug);

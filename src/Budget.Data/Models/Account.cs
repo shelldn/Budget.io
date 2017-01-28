@@ -7,5 +7,8 @@ namespace Budget.Data.Models
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
+        [BsonElement("username")]
+        public string UserName { get; set; }
     }
 }

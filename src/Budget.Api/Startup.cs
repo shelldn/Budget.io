@@ -1,21 +1,18 @@
 ﻿using Budget.Api.Configuration;
-using Budget.Api.Formatters;
 using Budget.Api.Services;
 using Budget.Data;
-using Budget.Data.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson.Serialization.Conventions;
-using MongoDB.Driver;
 
 namespace Budget.Api
 {
     public class Startup
     {
+        public IConfigurationRoot Configuration { get; }
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -23,15 +20,12 @@ namespace Budget.Api
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        private void ConfigureDependencies(IServiceCollection services)
+        private static void ConfigureDependencies(IServiceCollection services)
         {
-            services.AddSingleton<IConfiguration>(Configuration);
             services.AddScoped<IMonthGenerator, MonthGenerator>();
         }
 
@@ -43,7 +37,7 @@ namespace Budget.Api
 
             services.AddCors();
 
-            services.AddBudgetData();
+            services.AddBudgetData(connectionString: Configuration.GetConnectionString("DefaultConnection"));
             services.AddBudgetApi();
 
             services.AddSwaggerGen();
