@@ -18,7 +18,9 @@ namespace Budget.Id.Services
 
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-            var accounts = await _accounts.QueryAsync(a => a.UserName == context.UserName);
+            var accounts = await _accounts.QueryAsync(a =>
+                a.UserName == context.UserName &&
+                a.Password == context.Password);
 
             var account = accounts.FirstOrDefault();
 
