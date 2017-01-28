@@ -32,19 +32,6 @@ namespace Budget.Api
         private void ConfigureDependencies(IServiceCollection services)
         {
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddTransient<IMongoClient>(
-                sp => new MongoClient(sp.GetService<IConfiguration>().GetConnectionString("DefaultConnection")));
-
-            var pack = new ConventionPack { new CamelCaseElementNameConvention() };
-
-            ConventionRegistry.Register("CamelCase", pack, t => true);
-
-            services.AddTransient(sp => sp.GetService<IMongoClient>().GetDatabase("budgetio"));
-            services.AddTransient(typeof(IRepository<>), typeof(MongoRepository<>));
-
-            services.AddTransient(sp => sp.GetService<IMongoDatabase>().GetCollection<Category>("categories"));
-            services.AddTransient(sp => sp.GetService<IMongoDatabase>().GetCollection<Operation>("operations"));
-
             services.AddScoped<IMonthGenerator, MonthGenerator>();
         }
 
@@ -56,7 +43,8 @@ namespace Budget.Api
 
             services.AddCors();
 
-            services.AddApi();
+            services.AddBudgetData();
+            services.AddBudgetApi();
 
             services.AddSwaggerGen();
         }

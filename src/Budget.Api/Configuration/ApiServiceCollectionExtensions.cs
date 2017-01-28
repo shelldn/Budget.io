@@ -11,7 +11,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Budget.Api.Configuration
 {
-    public static class MvcConfig
+    public static class ApiServiceCollectionExtensions
     {
         private static void ConfigureAuthorization(MvcOptions options)
         {
@@ -34,7 +34,7 @@ namespace Budget.Api.Configuration
             inputFormatters.Add(new JsonApiInputFormatter());
         }
 
-        public static void AddApi(this IServiceCollection services)
+        public static void AddBudgetApi(this IServiceCollection services)
         {
             services.AddMvc(o =>
             {

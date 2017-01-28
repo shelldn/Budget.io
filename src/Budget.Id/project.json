@@ -1,8 +1,10 @@
 {
   "dependencies": {
-    "IdentityServer4": "1.0.0-rc1-update2",
+    "Budget.Data": "1.0.0-*",
+    "IdentityServer4": "1.0.2",
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
     "Microsoft.Extensions.Logging.Console": "1.1.0",
     "Microsoft.NETCore.App": "1.1.0"
@@ -13,16 +15,10 @@
   },
 
   "tools": {
-    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": [
-        "dotnet5.6",
-        "portable-net45+win8"
-      ]
-    }
+    "netcoreapp1.1": {}
   },
 
   "buildOptions": {

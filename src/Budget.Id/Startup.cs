@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Budget.Id.Services;
 using IdentityServer4.Models;
-using IdentityServer4.Services.InMemory;
+using IdentityServer4.Services;
+using IdentityServer4.Test;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,11 +12,13 @@ namespace Budget.Id
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDeveloperIdentityServer()
+            services.AddTransient<IProfileService, MongoProfileService>();
+
+            services
+                .AddIdentityServer()
+                .AddTemporarySigningCredential()
                 .AddInMemoryClients(new List<Client>
                 {
                     new Client
@@ -36,24 +40,21 @@ namespace Budget.Id
                         }
                     }
                 })
-                .AddInMemoryScopes(new List<Scope>
+                .AddInMemoryApiResources(new List<ApiResource>
                 {
-                    new Scope
-                    {
-                        Name = "api"
-                    }
+                    new ApiResource("api")
                 })
-                .AddInMemoryUsers(new List<InMemoryUser>
+                .AddTestUsers(new List<TestUser>
                 {
-                    new InMemoryUser
+                    new TestUser
                     {
-                        Subject = "5831db9c46c7cae8980e4a56",
+                        SubjectId = "5831db9c46c7cae8980e4a56",
                         Username = "yevgeny.shirin@gmail.com",
                         Password = "qwerty123"
                     },
-                    new InMemoryUser
+                    new TestUser
                     {
-                        Subject = "588b61c00bb389ded4c1f369",
+                        SubjectId = "588b61c00bb389ded4c1f369",
                         Username = "july.taranenko@gmail.com",
                         Password = "qwerty123"
                     }
