@@ -51,7 +51,8 @@ namespace Budget.Id
                         AllowedCorsOrigins =
                         {
                             "http://shelldn-ubuntu.westeurope.cloudapp.azure.com",
-                            "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:4200"
+                            "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:4200",
+                            "http://www.btable.xyz"
                         }
                     }
                 })
