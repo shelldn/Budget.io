@@ -62,6 +62,8 @@ namespace Budget.Id
                 });
 
             builder.Services.AddTransient<IResourceOwnerPasswordValidator, MongoResourceOwnerPasswordValidator>();
+
+            services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -69,7 +71,17 @@ namespace Budget.Id
             loggerFactory.AddConsole(LogLevel.Debug);
             app.UseDeveloperExceptionPage();
 
+            app.UseCors(b => b
+                .WithOrigins(
+                    "http://shelldn-ubuntu.westeurope.cloudapp.azure.com",
+                    "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:4200",
+                    "http://www.btable.xyz"
+                )
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+
             app.UseIdentityServer();
+            app.UseMvc();
         }
     }
 }
