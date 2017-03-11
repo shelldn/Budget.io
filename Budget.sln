@@ -1,24 +1,19 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26114.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A81065DF-708B-47E1-A3DA-BFEA19BC8C60}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D0812430-0678-4E60-B050-6D44C04BA465}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Api", "src\Budget.Api\Budget.Api.csproj", "{BFFD643C-EA3D-4E39-829C-737ED496C86A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Budget.Api", "src\Budget.Api\Budget.Api.xproj", "{BFFD643C-EA3D-4E39-829C-737ED496C86A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Id", "src\Budget.Id\Budget.Id.csproj", "{536C6E0C-597A-4060-AFA7-3F8F8B5B9E0B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Budget.Id", "src\Budget.Id\Budget.Id.xproj", "{536C6E0C-597A-4060-AFA7-3F8F8B5B9E0B}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Budget.Data", "src\Budget.Data\Budget.Data.xproj", "{DB75AA13-C039-4E19-B9C2-B435B176A6AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Data", "src\Budget.Data\Budget.Data.csproj", "{DB75AA13-C039-4E19-B9C2-B435B176A6AF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3A22DA1C-DEF6-4676-A771-037F54394BB1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Budget.Api.Test", "test\Budget.Api.Test\Budget.Api.Test.xproj", "{278F2F53-8CED-4812-8C68-FC6500C0967C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Budget.Api.Test", "test\Budget.Api.Test\Budget.Api.Test.csproj", "{278F2F53-8CED-4812-8C68-FC6500C0967C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
