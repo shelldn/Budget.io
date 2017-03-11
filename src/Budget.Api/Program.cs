@@ -9,7 +9,7 @@ namespace Budget.Api
         {
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseUrls("http://localhost:52778")
+                .UseUrls("http://*:52778")
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
