@@ -58,7 +58,7 @@ namespace Budget.Api
 
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
-                Authority = env.IsDevelopment() ? "http://localhost:52138" : "http://budget-id.azurewebsites.net",
+                Authority = env.IsDevelopment() ? "http://localhost:52138" : "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:8081",
                 AllowedScopes = { "api" },
                 RequireHttpsMetadata = false
             });
