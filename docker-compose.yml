@@ -1,12 +1,16 @@
-version: '2'
+version: '3'
 services:
   id:
-    build: './src/Budget.Id'
+    build:
+      context: .
+      dockerfile: ./src/Budget.Id/Dockerfile
     ports:
       - "8081:5000"
 
   api:
-    build: './src/Budget.Api'
+    build:
+      context: .
+      dockerfile: ./src/Budget.Api/Dockerfile
     ports:
       - "8080:5000"
 

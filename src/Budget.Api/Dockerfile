@@ -1,5 +1,12 @@
-FROM microsoft/dotnet:runtime
-WORKDIR /app
-COPY /out .
+FROM microsoft/dotnet:1.1-sdk
+
+# Restoring dependencies
+COPY . .
+
+WORKDIR src/Budget.Api
+RUN dotnet restore
+
 EXPOSE 5000
-ENTRYPOINT ["dotnet", "Budget.Api.dll"]
+
+# Running app
+ENTRYPOINT ["dotnet", "run", "src/Budget.Api/Budget.Api.csproj"]
