@@ -1,6 +1,7 @@
 version: '3'
 services:
   id:
+    container_name: budget-id
     build:
       context: .
       dockerfile: ./src/Budget.Id/Dockerfile
@@ -8,6 +9,7 @@ services:
       - "8081:5000"
 
   api:
+    container_name: budget-api
     build:
       context: .
       dockerfile: ./src/Budget.Api/Dockerfile
@@ -15,6 +17,7 @@ services:
       - "8080:5000"
 
   db:
+    container_name: budget-db
     image: 'mongo'
     volumes:
       - '/home/shelldn/data:/data/db'
