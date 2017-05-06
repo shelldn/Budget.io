@@ -7,8 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Budget.Api
-{
+namespace Budget.Api {
     public class Startup
     {
         public IConfigurationRoot Configuration { get; }
@@ -58,7 +57,7 @@ namespace Budget.Api
 
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
-                Authority = env.IsDevelopment() ? "http://localhost:52138" : "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:8081",
+                Authority = env.IsDevelopment() ? "http://id:5000" : "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:8081",
                 AllowedScopes = { "api" },
                 RequireHttpsMetadata = false
             });

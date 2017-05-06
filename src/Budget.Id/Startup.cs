@@ -8,8 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
+using Microsoft.Extensions.Logging; 
 namespace Budget.Id
 {
     public class Startup
@@ -50,6 +49,7 @@ namespace Budget.Id
                         },
                         AllowedCorsOrigins =
                         {
+                            "http://localhost:4200",
                             "http://shelldn-ubuntu.westeurope.cloudapp.azure.com",
                             "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:4200",
                             "http://www.btable.xyz"
@@ -73,6 +73,7 @@ namespace Budget.Id
 
             app.UseCors(b => b
                 .WithOrigins(
+                    "http://localhost:4200",
                     "http://shelldn-ubuntu.westeurope.cloudapp.azure.com",
                     "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:4200",
                     "http://www.btable.xyz"
