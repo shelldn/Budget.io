@@ -1,5 +1,11 @@
 version: '3'
 services:
+  spa:
+    container_name: budget-spa
+    image: shelldn/budget-spa
+    ports:
+      - "4200:4200"
+
   id:
     container_name: budget-id
     build:
