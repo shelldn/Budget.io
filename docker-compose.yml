@@ -1,29 +1,22 @@
 version: '3'
 services:
-  spa:
-    container_name: budget-spa
-    image: shelldn/budget-spa
-    ports:
-      - "4200:4200"
-
   id:
     container_name: budget-id
     build:
       context: .
       dockerfile: ./src/Budget.Id/Dockerfile
-    ports:
-      - "8081:5000"
+    network_mode: host
 
   api:
     container_name: budget-api
     build:
       context: .
       dockerfile: ./src/Budget.Api/Dockerfile
-    ports:
-      - "8080:5000"
+    network_mode: host
 
   db:
     container_name: budget-db
     image: 'mongo'
     volumes:
       - '/home/shelldn/data:/data/db'
+    network_mode: host

@@ -4,9 +4,7 @@ using Budget.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
+using Microsoft.Extensions.DependencyInjection; using Microsoft.Extensions.Logging; 
 namespace Budget.Api {
     public class Startup
     {
@@ -57,7 +55,7 @@ namespace Budget.Api {
 
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
-                Authority = env.IsDevelopment() ? "http://id:5000" : "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:8081",
+                Authority = env.IsDevelopment() ? "http://localhost:8081" : "http://shelldn-ubuntu.westeurope.cloudapp.azure.com:8081",
                 AllowedScopes = { "api" },
                 RequireHttpsMetadata = false
             });
