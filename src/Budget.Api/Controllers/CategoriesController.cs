@@ -20,6 +20,9 @@ namespace Budget.Api.Controllers
             _categories = categories;
         }
 
+        //
+        // GET: /api/budget/2017/categories
+
         [HttpGet("~/api/budgets/{id:int}/[controller]")]
         [ProducesResponseType(typeof(IEnumerable<ApiCategory>), 200)]
         public async Task<IActionResult> GetByBudgetId(int id)
@@ -41,12 +44,18 @@ namespace Budget.Api.Controllers
             return Ok(categories);
         }
 
+        //
+        // GET: /api/categories/42
+
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Category), 200)]
         public async Task<IActionResult> GetById(string id)
         {
             return Ok(await _categories.GetByIdAsync(id));
         }
+
+        //
+        // POST: /api/categories
 
         [HttpPost]
         [ProducesResponseType(201)]
@@ -67,6 +76,9 @@ namespace Budget.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = record.Id }, record);
         }
 
+        //
+        // PATCH: /api/categories/42
+
         [HttpPatch("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] ApiCategory category)
         {
@@ -85,6 +97,9 @@ namespace Budget.Api.Controllers
 
             return NoContent();
         }
+
+        //
+        // DELETE: /api/categories/42
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteById(string id)

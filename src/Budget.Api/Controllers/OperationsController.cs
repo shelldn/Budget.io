@@ -45,12 +45,18 @@ namespace Budget.Api.Controllers
             return Ok(operations);
         }
 
+        //
+        // GET: /api/operations/42
+
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiOperation), 200)]
         public async Task<IActionResult> GetById(string id)
         {
             return Ok(await _operations.GetByIdAsync(id));
         }
+
+        //
+        // POST: /api/operations
 
         [HttpPost]
         [ProducesResponseType(typeof(ApiOperation), 201)]
@@ -75,6 +81,9 @@ namespace Budget.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = operation.Id }, operation);
         }
 
+        //
+        // PATCH: /api/operations/42
+
         [HttpPatch("{id}")]
         [ProducesResponseType(204)]
         public async Task<IActionResult> Update(string id, [FromBody] ApiOperation operation)
@@ -96,6 +105,9 @@ namespace Budget.Api.Controllers
 
             return NoContent();
         }
+
+        //
+        // DELETE: /api/operations/42
 
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]

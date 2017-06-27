@@ -14,9 +14,13 @@ namespace Budget.Api.Controllers
             _monthGenerator = monthGenerator;
         }
 
+        //
+        // GET: /api/budgets/2017
+
         [HttpGet("{id:int}")]
         public IActionResult GetById(int id)
         {
+            System.Console.WriteLine(id);
             return Ok(new ApiBudget
             {
                 Id = id,
