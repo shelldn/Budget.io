@@ -1,4 +1,5 @@
 ﻿using Budget.Data.Models;
+using Budget.Data.Operations;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
@@ -10,6 +11,7 @@ namespace Budget.Data
         public static void AddBudgetData(this IServiceCollection services, string connectionString)
         {
             services.AddTransient(typeof(IRepository<>), typeof(MongoRepository<>));
+            services.AddTransient<IPlanPatcher, PlanPatcher>();
 
             var pack = new ConventionPack { new CamelCaseElementNameConvention() };
 

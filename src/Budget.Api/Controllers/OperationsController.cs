@@ -2,9 +2,12 @@
 using System.Threading.Tasks;
 using Budget.Data;
 using Budget.Data.Models;
+using Budget.Data.Operations;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using IdentityModel;
+using Microsoft.AspNetCore.JsonPatch;
+
 using ApiOperation = Budget.Api.Models.Operation;
 
 namespace Budget.Api.Controllers
@@ -13,10 +16,14 @@ namespace Budget.Api.Controllers
     public class OperationsController : Controller
     {
         private readonly IRepository<Operation> _operations;
+        private readonly IPlanPatcher _planPatcher;
 
-        public OperationsController(IRepository<Operation> operations)
+        public OperationsController(
+            IRepository<Operation> operations,
+            IPlanPatcher planPatcher)
         {
             _operations = operations;
+            _planPatcher = planPatcher;
         }
 
         //
@@ -86,22 +93,19 @@ namespace Budget.Api.Controllers
 
         [HttpPatch("{id}")]
         [ProducesResponseType(204)]
-        public async Task<IActionResult> Update(string id, [FromBody] ApiOperation operation)
+        public async Task<IActionResult> Patch(string id, [FromBody] JsonPatchDocument<ApiOperation> patch)
         {
             var accountId = User.Claims.Single(c => c.Type == JwtClaimTypes.Subject).Value;
 
-            var record = new Operation
-            {
-                Id = operation.Id,
-                AccountId = accountId,
-                BudgetId = operation.BudgetId,
-                Month = operation.MonthId,
-                CategoryId = operation.CategoryId,
-                Plan = operation.Plan,
-                Fact = operation.Fact
-            };
+            var replace = patch.Operations
+              .SingleOrDefault(o =>
+                  o.op == "replace" &&
+                  o.path == "/plan");
 
-            await _operations.UpdateAsync(id, record);
+            if (replace == null)
+                return BadRequest("You should provide only replace /plan operation");
+            
+            _planPatcher.Patch(id, accountId, (int) replace.value);
 
             return NoContent();
         }
