@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Budget.Data;
 using Budget.Data.Models;
@@ -105,7 +106,7 @@ namespace Budget.Api.Controllers
             if (replace == null)
                 return BadRequest("You should provide only replace /plan operation");
             
-            _planPatcher.Patch(id, accountId, (int) replace.value);
+            _planPatcher.Patch(id, accountId, Int32.Parse((string) replace.value));
 
             return NoContent();
         }

@@ -39,8 +39,8 @@ namespace Budget.Api.Configuration
             services.AddMvc(o =>
             {
                 ConfigureAuthorization(o);
-                ConfigureFilters(o.Filters);
-                ConfigureFormatters(o.InputFormatters, o.OutputFormatters);
+                // ConfigureFilters(o.Filters);
+                // ConfigureFormatters(o.InputFormatters, o.OutputFormatters);
 
             }).AddJsonOptions(o =>
             {
